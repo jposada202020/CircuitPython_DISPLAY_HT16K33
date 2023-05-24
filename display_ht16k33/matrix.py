@@ -40,3 +40,18 @@ class Matrix8x8(HT16K33):
     def __setitem__(self, key: Tuple[int, int], value: Optional[bool]) -> None:
         x, y = key
         self.pixel(x, y, value)
+
+
+class Matrix16x8(HT16K33):
+    """A single matrix."""
+
+    def __init__(self):
+        super().__init__(num_led_x=16, num_led_y=8, register_width=2)
+
+    def __getitem__(self, key: Tuple[int, int]) -> Optional[bool]:
+        x, y = key
+        return self.pixel(x, y)
+
+    def __setitem__(self, key: Tuple[int, int], value: Optional[bool]) -> None:
+        x, y = key
+        self.pixel(x, y, value)

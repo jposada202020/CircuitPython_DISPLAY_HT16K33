@@ -15,7 +15,7 @@ description = "On Display Simulation for an HT16K33 driver. Works with 16x8 and 
 version = "0.0.0+auto.0"
 readme = "README.rst"
 authors = [
-    {name = "JDM", email = "xxx@mailmeto.mozmail.com"}
+    {name = "JDM", email = "xxxy@mozmail.com"}
 ]
 urls = {Homepage = "https://github.com/jposada202020/CircuitPython_DISPLAY_HT16K33"}
 keywords = [

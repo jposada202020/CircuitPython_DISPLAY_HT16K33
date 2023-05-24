@@ -14,7 +14,7 @@ Authors: Radomir Dopieralski and Tony DiCola License: MIT
 
 
 """
-
+import gc
 from vectorio import Circle
 import displayio
 import ulab.numpy as np
@@ -53,7 +53,7 @@ class HT16K33:
 
         palette = displayio.Palette(3)
         palette[0] = 0x123456
-        palette[1] = 0x00000
+        palette[1] = 0x123456
         palette[2] = 0xFF5500
 
         self.matrix = []
@@ -85,7 +85,7 @@ class HT16K33:
         reg = 0
 
         if self.length == 2:
-            order = range(self.length - 1, 0, -1)
+            order = range(0, 2)
         if self.length == 1:
             order = range(0, 1)
 
@@ -107,7 +107,7 @@ class HT16K33:
         Set a specific pixel in the matrix
         """
         reg = 0
-        order = range(0, len(self.buffer))
+        order = range(0, self.length)
 
         for i in order:
             reg = (reg << 8) | self.buffer_rows[y][i]
@@ -166,6 +166,7 @@ class HT16K33:
         self.array = np.roll(self.array, x, axis=1)
 
         self.update_all()
+        gc.collect()
 
     def shift_right(self, rotate: bool = False) -> None:
         """
@@ -198,3 +199,32 @@ class HT16K33:
         :param rotate: (Optional) Rotate the shifted pixels to top (default=False)
         """
         self.shift(0, -1, rotate)
+
+    def fill(self, color: bool) -> None:
+        """
+        fill the entire matrix
+        """
+        if color:
+            new_value = 0xFFFF
+        else:
+            new_value = 0x0000
+        for ele in range(self.rows):
+            reg = 0
+
+            if self.length == 2:
+                order = range(0, 2)
+            if self.length == 1:
+                order = range(0, 1)
+
+            for ind in order:
+                reg = (reg << 8) | self.buffer_rows[ele][ind]
+
+            reg &= ~self.bit_mask
+            reg |= new_value
+
+            for ind2 in order:
+                self.buffer_rows[ele][ind2] = reg & 0xFF
+                reg >>= 8
+
+            self.convert_to_leds(ele)
+        self.update_all()
