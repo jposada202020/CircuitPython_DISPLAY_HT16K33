@@ -15,8 +15,8 @@ Introduction
     :alt: Total PyPI downloads
     :target: https://pepy.tech/project/circuitpython-display-ht16k33
 
-.. image:: https://github.com/jposada202020/CircuitPython_DISPLAY-HT16K33/workflows/Build%20CI/badge.svg
-    :target: https://github.com/jposada202020/CircuitPython_DISPLAY-HT16K33/actions
+.. image:: https://github.com/jposada202020/CircuitPython_DISPLAY_HT16K33/workflows/Build%20CI/badge.svg
+    :target: https://github.com/jposada202020/CircuitPython_DISPLAY_HT16K33/actions
     :alt: Build Status
 
 .. image:: https://img.shields.io/badge/code%20style-black-000000.svg
