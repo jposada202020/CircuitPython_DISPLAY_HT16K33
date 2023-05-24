@@ -2,6 +2,8 @@
 #
 # SPDX-License-Identifier: MIT
 
+# Copied and adapted in ht16k33_matrix_simpletest.py example for the Adafruit_ht16k33 library here:
+
 import time
 import board
 from display_ht16k33 import matrix
