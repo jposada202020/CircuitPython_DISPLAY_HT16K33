@@ -15,7 +15,6 @@ Authors: Radomir Dopieralski and Tony DiCola License: MIT
 
 """
 
-import time
 from vectorio import Circle
 import displayio
 import ulab.numpy as np
@@ -26,7 +25,10 @@ __repo__ = "https://github.com/jposada202020/CircuitPython_DISPLAY_HT16K33.git"
 
 
 class HT16K33:
-    """ """
+    """
+    Main class
+    """
+
     def __init__(
         self,
         num_led_x: int = 16,
@@ -55,25 +57,37 @@ class HT16K33:
         palette[2] = 0xFF5500
 
         self.matrix = []
-        for j in range(1, self.rows +1):
+        for j in range(1, self.rows + 1):
             row_buff = []
-            for coord_x in range(1, self.cols +1):
-                value = Circle(pixel_shader=palette, radius=10, x=coord_x * 25, y=j * 25, color_index=1)
+            for coord_x in range(1, self.cols + 1):
+                value = Circle(
+                    pixel_shader=palette,
+                    radius=10,
+                    x=coord_x * 25,
+                    y=j * 25,
+                    color_index=1,
+                )
                 row_buff.append(value)
                 self.group.append(value)
             self.matrix.append(row_buff)
 
     @property
     def value(self) -> bytearray:
+        """
+        Value of the buffer
+        """
         return self.buffer
 
     def set(self, y, new_value: int) -> None:
+        """
+        Set a particular value in an specific row defined by y
+        """
         reg = 0
 
         if self.length == 2:
             order = range(self.length - 1, 0, -1)
-        if self.length ==1:
-            order = range(0,1)
+        if self.length == 1:
+            order = range(0, 1)
 
         for ind in order:
             reg = (reg << 8) | self.buffer_rows[y][ind]
@@ -88,7 +102,10 @@ class HT16K33:
         self.convert_to_leds(y)
         self.update(y)
 
-    def pixel(self, x, y, color=True):
+    def pixel(self, x: int, y: int, color=True) -> None:
+        """
+        Set a specific pixel in the matrix
+        """
         reg = 0
         order = range(0, len(self.buffer))
 
@@ -119,14 +136,20 @@ class HT16K33:
                 self.array[y][index] = buffval
                 index = index + 1
 
-    def update(self,y):
-        for i, ele in enumerate(self.matrix[y]):
+    def update(self, y) -> None:
+        """
+        Update a particular Row
+        """
+        for i, _ in enumerate(self.matrix[y]):
             if self.array[y][i]:
                 self.matrix[y][i].color_index = 2
             else:
                 self.matrix[y][i].color_index = 1
 
     def update_all(self):
+        """
+        Update all the matrix
+        """
         for row in range(self.rows):
             self.update(row)
 
@@ -137,6 +160,8 @@ class HT16K33:
         :param int x: pixel x coordinate
         :param int y: pixel x coordinate
         """
+        if rotate:
+            pass
         self.array = np.roll(self.array, y, axis=0)
         self.array = np.roll(self.array, x, axis=1)
 

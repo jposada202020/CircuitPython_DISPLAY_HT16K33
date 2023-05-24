@@ -24,12 +24,11 @@ autodoc_preserve_defaults = True
 
 intersphinx_mapping = {
     "python": ("https://docs.python.org/3", None),
-    "BusDevice": ("https://docs.circuitpython.org/projects/busdevice/en/latest/", None),
-    "Register": ("https://docs.circuitpython.org/projects/register/en/latest/", None),
+    "ulab": ("https://micropython-ulab.readthedocs.io/en/latest/", None),
     "CircuitPython": ("https://docs.circuitpython.org/en/latest/", None),
 }
 
-autodoc_mock_imports = ["digitalio", "busio", "adafruit_register"]
+autodoc_mock_imports = ["digitalio", "busio", "vectorio", "displayio", "ulab"]
 autoclass_content = "both"
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ["_templates"]

@@ -2,12 +2,12 @@
 #
 # SPDX-License-Identifier: MIT
 
-from display_ht16k33 import matrix
-import board
 import time
+import board
+from display_ht16k33 import matrix
 
-matrix = matrix.Matrix8x8()
 display = board.DISPLAY
+matrix = matrix.Matrix8x8()
 display.show(matrix.group)
 
 for row in range(2, 6):

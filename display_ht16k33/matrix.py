@@ -18,9 +18,7 @@ Authors: Radomir Dopieralski and Tony DiCola License: MIT
 from display_ht16k33.ht16k33 import HT16K33
 
 try:
-    from typing import Optional, Tuple, Union, List
-    from circuitpython_typing.pil import Image
-    from busio import I2C
+    from typing import Optional, Tuple
 except ImportError:
     pass
 
@@ -28,10 +26,12 @@ except ImportError:
 __version__ = "0.0.0+auto.0"
 __repo__ = "https://github.com/jposada202020/CircuitPython_DISPLAY_HT16K33.git"
 
+
 class Matrix8x8(HT16K33):
     """A single matrix."""
+
     def __init__(self):
-        super().__init__(num_led_x=8,num_led_y=8,register_width=1)
+        super().__init__(num_led_x=8, num_led_y=8, register_width=1)
 
     def __getitem__(self, key: Tuple[int, int]) -> Optional[bool]:
         x, y = key
