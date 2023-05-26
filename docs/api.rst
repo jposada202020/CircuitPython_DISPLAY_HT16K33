@@ -10,3 +10,6 @@ DISPLAY_HT16K33
 
 .. automodule:: display_ht16k33.matrix
     :members:
+
+.. automodule:: display_ht16k33.segments
+    :members:

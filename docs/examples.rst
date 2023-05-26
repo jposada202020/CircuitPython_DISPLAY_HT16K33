@@ -15,3 +15,22 @@ Showing some text using framebuffer
 .. literalinclude:: ../examples/display_ht16k33_text.py
     :caption: examples/display_ht16k33_text.py
     :lines: 7-
+
+Segments Simple test
+-----------------------
+
+Segments simple test
+
+.. literalinclude:: ../examples/display_ht16k33_segments_simpletest.py
+    :caption: examples/display_ht16k33_segments_simpletest.py
+    :lines: 5-
+
+
+Segment Countdown example
+--------------------------
+
+Segment countdown example
+
+.. literalinclude:: ../examples/display_ht16k33_segments_count_down.py
+    :caption: examples/display_ht16k33_segments_count_down.py
+    :lines: 5-
