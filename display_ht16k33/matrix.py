@@ -30,8 +30,16 @@ __repo__ = "https://github.com/jposada202020/CircuitPython_DISPLAY_HT16K33.git"
 class Matrix8x8(HT16K33):
     """A single matrix."""
 
-    def __init__(self):
-        super().__init__(num_led_x=8, num_led_y=8, register_width=1)
+    def __init__(self, x, y, radius, text):
+        super().__init__(
+            x=x,
+            y=y,
+            radius=radius,
+            text=text,
+            num_led_x=8,
+            num_led_y=8,
+            register_width=1,
+        )
 
     def __getitem__(self, key: Tuple[int, int]) -> Optional[bool]:
         x, y = key
@@ -45,8 +53,17 @@ class Matrix8x8(HT16K33):
 class Matrix16x8(HT16K33):
     """A single matrix."""
 
-    def __init__(self):
-        super().__init__(num_led_x=16, num_led_y=8, register_width=2)
+    def __init__(self, x, y, radius, text):
+
+        super().__init__(
+            x=x,
+            y=y,
+            radius=radius,
+            text=text,
+            num_led_x=16,
+            num_led_y=8,
+            register_width=2,
+        )
 
     def __getitem__(self, key: Tuple[int, int]) -> Optional[bool]:
         x, y = key

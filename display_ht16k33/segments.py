@@ -14,7 +14,7 @@ Authors: Radomir Dopieralski and Tony DiCola License: MIT
 
 
 """
-from vectorio import Polygon
+from vectorio import Polygon, Circle
 import displayio
 
 __version__ = "0.0.0+auto.0"
@@ -105,10 +105,10 @@ class SEG7x4:
             (self._stroke // 2, self._stroke),
         ]
 
-        self._draw_digits(40, 3)
-        self._draw_digits(105, 2)
-        self._draw_digits(170, 1)
-        self._draw_digits(235, 0)
+        self._draw_digits(self._x, 3)
+        self._draw_digits(self._x + 65, 2)
+        self._draw_digits(self._x + 130, 1)
+        self._draw_digits(self._x + 195, 0)
 
     def _draw_digits(self, x, pos):
         posx = x
@@ -193,7 +193,13 @@ class SEG7x4:
         self.group.append(value)
         self._digits[pos] = segments
 
-        value = Circle(pixel_shader=self._palette, radius=self._height//8, x=posx+self._length + (self._height //4), y=self.y+ 2 *self._height - (self._height//8), color_index=1)
+        value = Circle(
+            pixel_shader=self._palette,
+            radius=self._height // 8,
+            x=posx + self._length + (self._height // 4),
+            y=self.y + 2 * self._height - (self._height // 8),
+            color_index=1,
+        )
         self.group.append(value)
 
     def print(self, value):
@@ -206,7 +212,9 @@ class SEG7x4:
             self.print_digit(i, value_string[len(value_string) - 1 - i])
 
     def print_digit(self, pos, char):
-        # print(ord(char))
+        """
+        Print a specific digit
+        """
         if char in "abcdefghijklmnopqrstuvwxy":
             character = ord(char) - 97 + 10
         elif char == "-":

@@ -14,7 +14,6 @@ Authors: Radomir Dopieralski and Tony DiCola License: MIT
 
 
 """
-import gc
 from vectorio import Circle
 import displayio
 import ulab.numpy as np
@@ -24,6 +23,7 @@ __version__ = "0.0.0+auto.0"
 __repo__ = "https://github.com/jposada202020/CircuitPython_DISPLAY_HT16K33.git"
 
 
+# pylint: disable=too-many-arguments, too-many-instance-attributes
 class HT16K33:
     """
     Main class
@@ -31,12 +31,19 @@ class HT16K33:
 
     def __init__(
         self,
+        x,
+        y,
+        radius=10,
+        text=False,
         num_led_x: int = 16,
         num_led_y: int = 8,
         register_width: int = 2,
     ) -> None:
+        self.x = x
+        self.y = y
         self.cols = num_led_x
         self.rows = num_led_y
+        self.radius = radius
 
         self.bit_mask = ((1 << self.cols) - 1) << 0
 
@@ -52,19 +59,25 @@ class HT16K33:
         self.group = displayio.Group()
 
         palette = displayio.Palette(3)
-        palette[0] = 0x123456
-        palette[1] = 0x123456
+        palette[0] = 0x2263A4
+        palette[1] = 0x101010
         palette[2] = 0xFF5500
 
         self.matrix = []
-        for j in range(1, self.rows + 1):
+
+        if text:
+            y_range = range(1, self.rows + 1)
+        else:
+            y_range = range(self.rows + 1, 1, -1)
+
+        for j in y_range:
             row_buff = []
             for coord_x in range(1, self.cols + 1):
                 value = Circle(
                     pixel_shader=palette,
-                    radius=10,
-                    x=coord_x * 25,
-                    y=j * 25,
+                    radius=self.radius,
+                    x=self.x + coord_x * (self.radius * 2 + self.radius // 2),
+                    y=self.y + j * (self.radius * 2 + self.radius // 2),
                     color_index=1,
                 )
                 row_buff.append(value)
@@ -84,10 +97,7 @@ class HT16K33:
         """
         reg = 0
 
-        if self.length == 2:
-            order = range(0, 2)
-        if self.length == 1:
-            order = range(0, 1)
+        order = range(0, self.length)
 
         for ind in order:
             reg = (reg << 8) | self.buffer_rows[y][ind]
@@ -98,9 +108,7 @@ class HT16K33:
         for ind2 in order:
             self.buffer_rows[y][ind2] = reg & 0xFF
             reg >>= 8
-
         self.convert_to_leds(y)
-        self.update(y)
 
     def pixel(self, x: int, y: int, color=True) -> None:
         """
@@ -140,6 +148,7 @@ class HT16K33:
         """
         Update a particular Row
         """
+
         for i, _ in enumerate(self.matrix[y]):
             if self.array[y][i]:
                 self.matrix[y][i].color_index = 2
@@ -166,7 +175,7 @@ class HT16K33:
         self.array = np.roll(self.array, x, axis=1)
 
         self.update_all()
-        gc.collect()
+        # gc.collect()
 
     def shift_right(self, rotate: bool = False) -> None:
         """
@@ -205,26 +214,8 @@ class HT16K33:
         fill the entire matrix
         """
         if color:
-            new_value = 0xFFFF
+            new_value = 0xFF
         else:
-            new_value = 0x0000
+            new_value = 0x00
         for ele in range(self.rows):
-            reg = 0
-
-            if self.length == 2:
-                order = range(0, 2)
-            if self.length == 1:
-                order = range(0, 1)
-
-            for ind in order:
-                reg = (reg << 8) | self.buffer_rows[ele][ind]
-
-            reg &= ~self.bit_mask
-            reg |= new_value
-
-            for ind2 in order:
-                self.buffer_rows[ele][ind2] = reg & 0xFF
-                reg >>= 8
-
-            self.convert_to_leds(ele)
-        self.update_all()
+            self.set(ele, new_value)
