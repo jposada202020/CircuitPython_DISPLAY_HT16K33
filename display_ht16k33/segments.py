@@ -59,6 +59,7 @@ NUMBERS = (
     0x6E,  # y
     0x40,  # -
     0x40,  # -
+    0x00,  # Null
 )
 
 
@@ -105,9 +106,9 @@ class SEG7x4:
         ]
 
         self._draw_digits(40, 3)
-        self._draw_digits(90, 2)
-        self._draw_digits(150, 1)
-        self._draw_digits(200, 0)
+        self._draw_digits(105, 2)
+        self._draw_digits(170, 1)
+        self._draw_digits(235, 0)
 
     def _draw_digits(self, x, pos):
         posx = x
@@ -192,6 +193,9 @@ class SEG7x4:
         self.group.append(value)
         self._digits[pos] = segments
 
+        value = Circle(pixel_shader=self._palette, radius=self._height//8, x=posx+self._length + (self._height //4), y=self.y+ 2 *self._height - (self._height//8), color_index=1)
+        self.group.append(value)
+
     def print(self, value):
         """
         print the value given. for the time being only works with ints
@@ -201,12 +205,19 @@ class SEG7x4:
         for i in range(len(value_string)):
             self.print_digit(i, value_string[len(value_string) - 1 - i])
 
-    def print_digit(self, pos, value):
-        """
-        Prints the desired value in the corresponding position. Works with ints only
-        """
-        character = ord(value) - 48
+    def print_digit(self, pos, char):
+        # print(ord(char))
+        if char in "abcdefghijklmnopqrstuvwxy":
+            character = ord(char) - 97 + 10
+        elif char == "-":
+            character = 36
+        elif char in "0123456789":
+            character = ord(char) - 48
+        elif char == "*":
+            character = 37
+
         new_value = NUMBERS[character]
+
         for i in range(7):
             biff = new_value >> i & 1
 
@@ -220,4 +231,4 @@ class SEG7x4:
         Clear the digits
         """
         for i in range(4):
-            self.print_digit(i, "0")
+            self.print_digit(i, "*")
