@@ -69,7 +69,7 @@ NUMBERS = (
     0x00,  # Null
 )
 
-# pylint: disable=too-many-arguments, too-many-instance-attributes
+# pylint: disable=too-many-arguments, too-many-instance-attributes, too-few-public-methods
 
 
 class SEG7x4:
@@ -315,3 +315,344 @@ class SEG7x4:
         if value:
             pass
         self.clear()
+
+
+class SEG14x4:
+    """
+    Segment 14 x 4 Class
+    """
+
+    def __init__(
+        self,
+        x: int,
+        y: int,
+        height: int = 40,
+        length: int = 40,
+        space: int = 70,
+        stroke: int = 4,
+        color_off: int = 0x123456,
+        color_on: int = 0xFF5500,
+        char_dict: Optional[Dict[str, int]] = None,
+    ) -> None:
+        self._x = x
+        self.y = y
+
+        self._digits = [None, None, None, None]
+        self.buffer = [None, None, None, None]
+        self._two_points_container = []
+
+        self._chardict = char_dict
+
+        self.group = displayio.Group()
+
+        self._palette = displayio.Palette(3)
+        self._palette.make_transparent(0)
+        self._palette[1] = color_off
+        self._palette[2] = color_on
+        self._stroke = stroke
+        self._length = length
+        self._height = height
+        self._space = space
+
+        self._pointsh = [
+            (0, 0),
+            (self._stroke, self._stroke // 2),
+            (self._length - self._stroke, self._stroke // 2),
+            (self._length, 0),
+            (self._length - self._stroke, -self._stroke // 2),
+            (self._stroke, -self._stroke // 2),
+        ]
+
+        self._pointsh_half = [
+            (0, 0),
+            (self._stroke, self._stroke // 2),
+            (self._length // 2 - self._stroke, self._stroke // 2),
+            (self._length // 2, 0),
+            (self._length // 2 - self._stroke, -self._stroke // 2),
+            (self._stroke, -self._stroke // 2),
+        ]
+
+        self._pointsv = [
+            (0, 0),
+            (-self._stroke // 2, self._stroke),
+            (-self._stroke // 2, self._height - self._stroke),
+            (0, self._height),
+            (self._stroke // 2, self._height - self._stroke),
+            (self._stroke // 2, self._stroke),
+        ]
+
+        self._pointsv_half = [
+            (0, 0),
+            (-self._stroke // 2, self._stroke),
+            (-self._stroke // 2, self._height - self._stroke - self._stroke),
+            (0, self._height - self._stroke),
+            (self._stroke // 2, self._height - self._stroke - self._stroke),
+            (self._stroke // 2, self._stroke),
+        ]
+        self._pointsd_right_bot = [
+            (0, 0),
+            (0, -2 * self._stroke),
+            (
+                self._length // 2 - 2 * self._stroke - self._stroke,
+                -self._height + 2 * self._stroke,
+            ),
+            (
+                self._length // 2 - 2 * self._stroke,
+                -self._height + 2 * self._stroke + self._stroke,
+            ),
+            (self._stroke, 0),
+        ]
+
+        self._pointsd_left_bot = [
+            (0, 0),
+            (0, -2 * self._stroke),
+            (
+                -self._length // 2 + self._stroke + 2 * self._stroke,
+                -self._height + 2 * self._stroke,
+            ),
+            (
+                -self._length // 2 + 2 * self._stroke,
+                -self._height + 2 * self._stroke + self._stroke,
+            ),
+            (-self._stroke, 0),
+        ]
+
+        self._pointsd_right_up = [
+            (0, 0),
+            (0, 2 * self._stroke),
+            (
+                self._length // 2 - 2 * self._stroke - self._stroke,
+                self._height - 2 * self._stroke,
+            ),
+            (
+                self._length // 2 - 2 * self._stroke,
+                self._height - 2 * self._stroke - self._stroke,
+            ),
+            (self._stroke, 0),
+        ]
+
+        self._pointsd_left_up = [
+            (0, 0),
+            (0, 2 * self._stroke),
+            (
+                -self._length // 2 + 2 * self._stroke + self._stroke,
+                self._height - 2 * self._stroke,
+            ),
+            (
+                -self._length // 2 + 2 * self._stroke,
+                self._height - 2 * self._stroke - self._stroke,
+            ),
+            (-self._stroke, 0),
+        ]
+
+        # h= height - 2 * stroke
+        self._draw_digits(self._x, 3)
+        self._draw_digits(self._x + self._space, 2)
+        self._draw_digits(self._x + self._space * 2, 1)
+        self._draw_digits(self._x + self._space * 3, 0)
+        self._draw_two_points()
+
+    def _draw_digits(self, x, pos):
+        posx = x
+
+        segments = []
+
+        # Segment A
+        value = Polygon(
+            pixel_shader=self._palette,
+            points=self._pointsh,
+            x=posx,
+            y=self.y,
+            color_index=1,
+        )
+        segments.append(value)
+        self.group.append(value)
+
+        # Segment B
+        value = Polygon(
+            pixel_shader=self._palette,
+            points=self._pointsv,
+            x=posx + self._length - self._stroke // 2,
+            y=self.y,
+            color_index=1,
+        )
+        segments.append(value)
+        self.group.append(value)
+
+        # Segment C
+        value = Polygon(
+            pixel_shader=self._palette,
+            points=self._pointsv,
+            x=posx + self._length - self._stroke // 2,
+            y=self.y + self._height,
+            color_index=1,
+        )
+        segments.append(value)
+        self.group.append(value)
+
+        # Segment D
+        value = Polygon(
+            pixel_shader=self._palette,
+            points=self._pointsh,
+            x=posx,
+            y=self.y + self._length * 2,
+            color_index=1,
+        )
+        segments.append(value)
+        self.group.append(value)
+
+        # Segment E
+        value = Polygon(
+            pixel_shader=self._palette,
+            points=self._pointsv,
+            x=posx,
+            y=self.y + self._height,
+            color_index=1,
+        )
+        segments.append(value)
+        self.group.append(value)
+
+        # Segment F
+        value = Polygon(
+            pixel_shader=self._palette,
+            points=self._pointsv,
+            x=posx,
+            y=self.y,
+            color_index=1,
+        )
+        segments.append(value)
+        self.group.append(value)
+
+        # Segment G1
+        value = Polygon(
+            pixel_shader=self._palette,
+            points=self._pointsh_half,
+            x=posx,
+            y=self.y + self._height,
+            color_index=1,
+        )
+        segments.append(value)
+        self.group.append(value)
+
+        # Segment G2
+        value = Polygon(
+            pixel_shader=self._palette,
+            points=self._pointsh_half,
+            x=posx + self._length // 2,
+            y=self.y + self._height,
+            color_index=1,
+        )
+
+        segments.append(value)
+        self.group.append(value)
+
+        # Segment H
+        value = Polygon(
+            pixel_shader=self._palette,
+            points=self._pointsd_right_up,
+            x=posx + self._stroke,
+            y=self.y + self._stroke,
+            color_index=1,
+        )
+
+        segments.append(value)
+        self.group.append(value)
+
+        # Segment J
+        value = Polygon(
+            pixel_shader=self._palette,
+            points=self._pointsv_half,
+            x=posx + self._length // 2,
+            y=self.y + self._stroke // 2,
+            color_index=1,
+        )
+
+        segments.append(value)
+        self.group.append(value)
+
+        # Segment K
+        value = Polygon(
+            pixel_shader=self._palette,
+            points=self._pointsd_left_up,
+            x=posx + self._length - self._stroke,
+            y=self.y + self._stroke,
+            color_index=1,
+        )
+
+        segments.append(value)
+        self.group.append(value)
+
+        # Segment L
+        value = Polygon(
+            pixel_shader=self._palette,
+            points=self._pointsd_right_bot,
+            x=posx + self._stroke,
+            y=self.y + self._height * 2 - self._stroke,
+            color_index=1,
+        )
+
+        segments.append(value)
+        self.group.append(value)
+
+        # Segment M
+        value = Polygon(
+            pixel_shader=self._palette,
+            points=self._pointsv_half,
+            x=posx + self._length // 2,
+            y=self.y + self._height + self._stroke // 2,
+            color_index=1,
+        )
+
+        segments.append(value)
+        self.group.append(value)
+
+        # Segment N
+        value = Polygon(
+            pixel_shader=self._palette,
+            points=self._pointsd_left_bot,
+            x=posx + self._length - self._stroke,
+            y=self.y + self._height * 2 - self._stroke,
+            color_index=1,
+        )
+
+        segments.append(value)
+        self.group.append(value)
+
+        self._digits[pos] = segments
+
+        value = Circle(
+            pixel_shader=self._palette,
+            radius=self._height // 8,
+            x=posx + self._length + (self._height // 4),
+            y=self.y + 2 * self._height - (self._height // 8),
+            color_index=1,
+        )
+        self.group.append(value)
+
+    def _two_points(self, show=True):
+        if show:
+            for i in range(2):
+                self._two_points_container[i].color_index = 2
+        else:
+            for i in range(2):
+                self._two_points_container[i].color_index = 1
+
+    def _draw_two_points(self):
+        value = Circle(
+            pixel_shader=self._palette,
+            radius=self._height // 8,
+            x=self._x + self._space + self._length + (self._space - self._length) // 2,
+            y=self.y + self._height // 2 - (self._height // 16),
+            color_index=1,
+        )
+        self.group.append(value)
+        self._two_points_container.append(value)
+        value = Circle(
+            pixel_shader=self._palette,
+            radius=self._height // 8,
+            x=self._x + self._space + self._length + (self._space - self._length) // 2,
+            y=self.y + self._height + self._height // 2 - (self._height // 16),
+            color_index=1,
+        )
+        self.group.append(value)
+        self._two_points_container.append(value)
