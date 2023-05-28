@@ -43,3 +43,12 @@ Segment Custom Chats example
 .. literalinclude:: ../examples/display_ht16k33_segments_custom_chars.py
     :caption: examples/display_ht16k33_segments_custom_chars.py
     :lines: 9-
+
+Segment 14x4 example
+------------------------------
+
+Segment 14x4 example
+
+.. literalinclude:: ../examples/display_ht16k33_segments_14x4.py
+    :caption: examples/display_ht16k33_segments_14x4.py
+    :lines: 5-
