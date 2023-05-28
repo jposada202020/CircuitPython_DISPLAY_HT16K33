@@ -27,6 +27,11 @@ On Display Simulation for an HT16K33 driver. Works with 16x8 and 8x8 matrices.
 
 .. image:: https://github.com/jposada202020/CircuitPython_DISPLAY_HT16K33/blob/master/docs/7mwahe.gif
 
+Also work with segments with a very similar sintax to the Adafruit Segments library
+
+.. image:: https://github.com/jposada202020/CircuitPython_DISPLAY_HT16K33/blob/master/docs/segments.jpg
+
+
 Dependencies
 =============
 This driver depends on:
