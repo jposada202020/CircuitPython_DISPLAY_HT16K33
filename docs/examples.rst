@@ -52,3 +52,11 @@ Segment 14x4 example
 .. literalinclude:: ../examples/display_ht16k33_segments_14x4.py
     :caption: examples/display_ht16k33_segments_14x4.py
     :lines: 5-
+
+Marquee 14x4 example
+------------------------------
+
+Marquee 14x4 example
+
+.. literalinclude:: ../examples/display_ht16k33_segments_marquee.py
+    :caption: examples/display_ht16k33_segments_marquee.py
