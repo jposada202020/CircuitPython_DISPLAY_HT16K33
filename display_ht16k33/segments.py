@@ -15,13 +15,11 @@ Authors: Radomir Dopieralski and Tony DiCola License: MIT
 
 """
 import time
-
 from vectorio import Polygon, Circle
 import displayio
 
-
 try:
-    from typing import Optional, Dict
+    from typing import Optional, Dict, Tuple, Union
 except ImportError:
     pass
 
@@ -176,11 +174,25 @@ NUMBERS = (
 
 class SEG7x4:
     """
-    Main class
+    Main class to display the 7x4 segments on the screen
 
-    :param int x: x coordinates in pixel for the segment to start
-    :param dict char_dict: An optional dictionary mapping strings to bit settings integers used
-        for defining how to display custom letters
+    :param int x: x coordinates in pixels for the segment to start. This is the top
+     left corner of the first digit
+    :param int y: y coordinates in pixels for the segment to start. This is the top
+     left corner of the first digit
+
+    :param int height: segment height in pixels. Defaults to :const:`40` pixels
+    :param int length: segment length in pixels. Defaults to :const:`40` pixels
+    :param int stroke: segment width in pixels. Defaults to :const:`4` pixels
+
+    :param int|tuple color_off: (*RGB tuple or 24-bit hex value*) segment fill color
+     when segment is on. Defaults to :const:`0x123456` Blue.
+    :param int|tuple color_on: (*RGB tuple or 24-bit hex value*) segment fill color
+     when segment is on. Defaults to :const:`0xFF5500` orange.
+
+    :param dict char_dict: An optional dictionary mapping strings to bit settings
+     integers used for defining how to display custom letters
+
     """
 
     def __init__(
@@ -191,7 +203,7 @@ class SEG7x4:
         length: int = 40,
         space: int = 70,
         stroke: int = 4,
-        color_off: int = 0x123456,
+        color_off: Union[int, Tuple] = 0x123456,
         color_on: int = 0xFF5500,
         char_dict: Optional[Dict[str, int]] = None,
     ) -> None:
@@ -238,7 +250,10 @@ class SEG7x4:
         self._draw_digits(self._x + self._space * 3, 0)
         self._draw_two_points()
 
-    def _draw_two_points(self):
+    def _draw_two_points(self) -> None:
+        """
+        Internal function to draw the two points hour indicators
+        """
         value = Circle(
             pixel_shader=self._palette,
             radius=self._height // 8,
@@ -258,7 +273,14 @@ class SEG7x4:
         self.group.append(value)
         self._two_points_container.append(value)
 
-    def _draw_digits(self, x, pos):
+    def _draw_digits(self, x: int, pos: int) -> None:
+        """
+        Internal function to draw the segments
+
+        :param int x: digits x distance in pixels
+        :param int pos: digit's position
+
+        """
         posx = x
 
         segments = []
@@ -350,10 +372,15 @@ class SEG7x4:
         )
         self.group.append(value)
 
-    def print(self, value):
+    def print(self, value: str) -> None:
         """
-        print the value given. for the time being only works with ints
+        Print the value given. Only work with strings
+
+        :param str value: String to be put in the 7x4 segment
         """
+        if not isinstance(value, str):
+            raise ValueError("Value must be a string")
+
         self.clear()
         if ":" in value:
             value = value.replace(":", "")
@@ -363,9 +390,13 @@ class SEG7x4:
         for i in range(len(value_string)):
             self.print_digit(i, value_string[len(value_string) - 1 - i])
 
-    def print_digit(self, pos, char):
+    def print_digit(self, pos: int, char: str) -> None:
         """
         Print a specific digit
+
+        :param int pos: position in the 7x4 segment
+        :param str char: character to be printed
+
         """
         char = char.lower()
         if char in "abcdefghijklmnopqrstuvwxy":
@@ -390,7 +421,7 @@ class SEG7x4:
             else:
                 self._digits[pos][i].color_index = 1
 
-    def clear(self):
+    def clear(self) -> None:
         """
         Clear the digits
         """
@@ -401,7 +432,7 @@ class SEG7x4:
     def __setitem__(self, key: int, value: str) -> None:
         self.print_digit(key, value)
 
-    def _two_points(self, show=True):
+    def _two_points(self, show: bool = True):
         if show:
             for i in range(2):
                 self._two_points_container[i].color_index = 2
@@ -409,7 +440,7 @@ class SEG7x4:
             for i in range(2):
                 self._two_points_container[i].color_index = 1
 
-    def fill(self, value):
+    def fill(self, value: int) -> None:
         """
         Fill function. to be compatible with the Hardware version
         of the library
@@ -421,7 +452,25 @@ class SEG7x4:
 
 class SEG14x4:
     """
-    Segment 14 x 4 Class
+    Main class to display the 14x4 segments on the screen
+
+    :param int x: x coordinates in pixels for the segment to start. This is the top left
+     corner of the first digit
+    :param int y: y coordinates in pixels for the segment to start. This is the top left
+     corner of the first digit
+
+    :param int height: segment height in pixels. Defaults to :const:`40` pixels
+    :param int length: segment length in pixels. Defaults to :const:`40` pixels
+    :param int stroke: segment width in pixels. Defaults to :const:`4` pixels
+
+    :param int|tuple color_off: (*RGB tuple or 24-bit hex value*) segment fill color when segment
+     is on. Defaults to :const:`0x123456` Blue.
+    :param int|tuple color_on: (*RGB tuple or 24-bit hex value*) segment fill color when segment
+     is on. Defaults to :const:`0xFF5500` orange.
+
+    :param dict char_dict: An optional dictionary mapping strings to bit settings integers used
+     for defining how to display custom letters
+
     """
 
     def __init__(
@@ -561,6 +610,13 @@ class SEG14x4:
         self._draw_two_points()
 
     def _draw_digits(self, x, pos):
+        """
+        Internal function to draw the segments
+
+        :param int x: digits x distance in pixels
+        :param int pos: digit's position
+
+        """
         posx = x
 
         segments = []
@@ -748,6 +804,9 @@ class SEG14x4:
                 self._two_points_container[i].color_index = 1
 
     def _draw_two_points(self):
+        """
+        Internal function to draw the two points hour indicators
+        """
         value = Circle(
             pixel_shader=self._palette,
             radius=self._height // 8,
@@ -795,7 +854,9 @@ class SEG14x4:
 
     def print(self, value):
         """
-        print the value given. for the time being only works with ints
+        Print the value given. Only work with strings
+
+        :param str value: String to be put in the 7x4 segment
         """
         self.clear()
         if ":" in value:
