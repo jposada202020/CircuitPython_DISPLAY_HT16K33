@@ -204,7 +204,7 @@ class SEG7x4:
         space: int = 70,
         stroke: int = 4,
         color_off: Union[int, Tuple] = 0x123456,
-        color_on: int = 0xFF5500,
+        color_on: Union[int, Tuple] = 0xFF5500,
         char_dict: Optional[Dict[str, int]] = None,
     ) -> None:
         self._x = x
@@ -212,6 +212,7 @@ class SEG7x4:
 
         self._digits = [None, None, None, None]
         self._two_points_container = []
+        self._colon = False
 
         self._chardict = char_dict
 
@@ -372,16 +373,15 @@ class SEG7x4:
         )
         self.group.append(value)
 
-    def print(self, value: str) -> None:
+    def print(self, value: Union[int, str]) -> None:
         """
         Print the value given. Only work with strings
 
-        :param str value: String to be put in the 7x4 segment
+        :param int|str value: String to be put in the 7x4 segment
         """
-        if not isinstance(value, str):
-            raise ValueError("Value must be a string")
-
         self.clear()
+        if isinstance(value, int):
+            value = str(value)
         if ":" in value:
             value = value.replace(":", "")
             self._two_points(True)
@@ -407,6 +407,8 @@ class SEG7x4:
             character = ord(char) - 48
         elif char == "*":
             character = 37
+        elif char == " ":
+            character = 37
 
         if self._chardict and char in self._chardict:
             new_value = self._chardict[char]
@@ -414,6 +416,19 @@ class SEG7x4:
             new_value = NUMBERS[character]
 
         for i in range(7):
+            biff = new_value >> i & 1
+
+            if biff:
+                self._digits[pos][i].color_index = 2
+            else:
+                self._digits[pos][i].color_index = 1
+
+    def set_digit_raw(self, pos, value):
+
+        new_value = value & 0x7F
+
+        for i in range(7):
+
             biff = new_value >> i & 1
 
             if biff:
@@ -449,6 +464,37 @@ class SEG7x4:
             pass
         self.clear()
 
+    @property
+    def colon(self):
+        return self._colon
+
+    @colon.setter
+    def colon(self, value: bool):
+        self._two_points(value)
+
+    def marquee(self, text: str, delay: float = 0.25, loop: bool = True) -> None:
+        """
+        Automatically scroll the text at the specified delay between characters
+
+        :param str text: Text to display
+        :param float delay: Delay in seconds to pause before scrolling to the next
+         character. Defaults to 0.25 seconds
+        :param bool loop: Whether to endlessly loop the text. Defaults to `True`
+
+        """
+
+        def cycle(text, delay):
+            for i in range(len(text)):
+                self.print(text[i : 4 + i])
+                time.sleep(delay)
+
+        text = text + " " * 4
+
+        if loop:
+            while True:
+                cycle(text, delay)
+        else:
+            cycle(text, delay)
 
 class SEG14x4:
     """
@@ -506,6 +552,12 @@ class SEG14x4:
         self._length = length
         self._height = height
         self._space = space
+
+        self._index = 0
+        self._delay = 0.25
+        self._last_nb_scroll_time = -1
+        self.marquee_text = None
+        self.loop = True
 
         self._pointsh = [
             (0, 0),
@@ -917,3 +969,33 @@ class SEG14x4:
                 cycle(text, delay)
         else:
             cycle(text, delay)
+
+    def non_blocking_marquee(
+        self, text: str, delay: float = 0.25, loop: bool = True
+    ) -> None:
+        """
+        Non Blocking Marquee Definition function
+
+        :param str text: Text to display
+        :param float delay: Delay in seconds to pause before scrolling to the next
+         character. Defaults to 0.25 seconds
+        :param bool loop: Whether to endlessly loop the text. Defaults to `True`
+        """
+
+        self.marquee_text = text + " " * 4
+        self.loop = loop
+        self._index = 0
+        self._delay = delay
+
+    def non_blocking_marquee_update(self):
+        """
+        Non Blocking Marquee update function
+        """
+        if self.loop:
+            now = time.monotonic()
+            if now >= self._last_nb_scroll_time + self._delay:
+                self._last_nb_scroll_time = now
+                self.print(self.marquee_text[self._index : 4 + self._index])
+                self._index = self._index + 1
+            if self._index > len(self.marquee_text) - 4:
+                self._index = 0

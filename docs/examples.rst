@@ -60,3 +60,11 @@ Marquee 14x4 example
 
 .. literalinclude:: ../examples/display_ht16k33_segments_marquee.py
     :caption: examples/display_ht16k33_segments_marquee.py
+
+Advanced Example
+------------------------------
+
+Advanced Example
+
+.. literalinclude:: ../examples/display_ht16k33_advanced_example.py
+    :caption: examples/display_ht16k33_advanced_example.py
