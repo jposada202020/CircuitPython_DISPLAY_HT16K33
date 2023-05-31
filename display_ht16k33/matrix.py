@@ -28,7 +28,19 @@ __repo__ = "https://github.com/jposada202020/CircuitPython_DISPLAY_HT16K33.git"
 
 
 class Matrix8x8(HT16K33):
-    """A single matrix."""
+    """A single matrix.
+    :param int x: x coordinates in pixels for the matrix to start. This is the top
+    left corner of the first digit
+    :param int y: y coordinates in pixels for the matrix to start. This is the top
+    left corner of the first digit
+
+    :param int radius: led radius in pixels.
+
+    :param bool text: define if the matrix will be used to display text. For reasons
+     that are beyond my understanding :). The text and pixels examples work differently.
+     displaying text will use framebuffer, and it will show in a different direction. will be
+     good to review a PR if you found this situation a little too much for your OCD ;)
+    """
 
     def __init__(self, x, y, radius, text):
         super().__init__(
@@ -51,7 +63,18 @@ class Matrix8x8(HT16K33):
 
 
 class Matrix16x8(HT16K33):
-    """A single matrix."""
+    """A single matrix.
+    :param int x: x coordinates in pixels for the matrix to start. This is the top
+    left corner of the first digit
+    :param int y: y coordinates in pixels for the matrix to start. This is the top
+    left corner of the first digit
+    :param int radius: led radius in pixels.
+
+    :param bool text: define if the matrix will be used to display text. For reasons
+     that are beyond my understanding :). The text and pixels examples work differently.
+     displaying text will use framebuffer, and it will show in a different direction. will be
+     good to review a PR if you found this situation a little too much for your OCD ;)
+    """
 
     def __init__(self, x, y, radius, text):
 

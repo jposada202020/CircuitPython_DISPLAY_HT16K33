@@ -27,6 +27,26 @@ __repo__ = "https://github.com/jposada202020/CircuitPython_DISPLAY_HT16K33.git"
 class HT16K33:
     """
     Main class
+    :param int x: x coordinates in pixels for the matrix to start. This is the top
+    left corner of the first digit
+    :param int y: y coordinates in pixels for the matrix to start. This is the top
+    left corner of the first digit
+
+    :param int radius: led radius in pixels. Defaults to :const:`10` pixels
+
+    :param bool text: define if the matrix will be used to display text. For reasons
+     that are beyond my understanding :). The text and pixels examples work differently.
+     displaying text will use framebuffer, and it will show in a different direction. will be
+     good to review a PR if you found this situation a little too much for your OCD ;)
+
+    :param int num_led_x: Led quantity in the x direction. Although you could select a different
+     value than 8 or 16, library logic is tested with these value, so unexpected
+     behaviour is expected, if these values are not used
+    :param int num_led_y: Led quantity in the y direction. Although you could select a different
+     value than 8, library logic is tested with this value, so unexpected behaviour is expected,
+     if this value is not used
+
+    :param register_width int:register width to be used. Defaults to :const:`2`
     """
 
     def __init__(
@@ -91,9 +111,13 @@ class HT16K33:
         """
         return self.buffer
 
-    def set(self, y, new_value: int) -> None:
+    def set(self, y: int, new_value: int) -> None:
         """
-        Set a particular value in an specific row defined by y
+        Set a particular value in a specific row defined by y
+
+        :param int y: row number
+        :param int new_value: value to be set
+
         """
         reg = 0
 
@@ -113,6 +137,9 @@ class HT16K33:
     def pixel(self, x: int, y: int, color=True) -> None:
         """
         Set a specific pixel in the matrix
+        :param int x: pixel's x coordinate in the matrix
+        :param int y: pixel's y coordinate in the matrix
+        :param bool color: if the pixel is to be shown or not. Defaults to shown `True`
         """
         reg = 0
         order = range(0, self.length)
@@ -134,7 +161,9 @@ class HT16K33:
 
     def convert_to_leds(self, y) -> None:
         """
-        :return:
+        Internal function to convert values to a led on and off matrix
+        :param int y: y row number
+        :return: None
         """
         index = 0
         for i in range(0, self.length):
@@ -144,9 +173,11 @@ class HT16K33:
                 self.array[y][index] = buffval
                 index = index + 1
 
-    def update(self, y) -> None:
+    def update(self, y: int) -> None:
         """
         Update a particular Row
+
+        :param int y: row y number
         """
 
         for i, _ in enumerate(self.matrix[y]):
@@ -155,7 +186,7 @@ class HT16K33:
             else:
                 self.matrix[y][i].color_index = 1
 
-    def update_all(self):
+    def update_all(self) -> None:
         """
         Update all the matrix
         """
@@ -175,7 +206,6 @@ class HT16K33:
         self.array = np.roll(self.array, x, axis=1)
 
         self.update_all()
-        # gc.collect()
 
     def shift_right(self, rotate: bool = False) -> None:
         """

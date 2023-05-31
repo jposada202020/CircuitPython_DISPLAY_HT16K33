@@ -391,6 +391,10 @@ class SEG7x4:
         if ":" in value:
             value = value.replace(":", "")
             self._two_points(True)
+        if "." in value:
+
+            self._number(value)
+            return
 
         value_string = str(value)
         for i in range(len(value_string)):
@@ -452,6 +456,7 @@ class SEG7x4:
         for i in range(4):
             self.print_digit(i, "*")
         self._two_points(False)
+        self.points = False
 
     def __setitem__(self, key: int, value: str) -> None:
         self.print_digit(key, value)
@@ -524,14 +529,16 @@ class SEG7x4:
         else:
             cycle(text, delay)
 
-    def _number(self, number: float) -> None:
+    def _number(self, number: Union[float, str]) -> None:
         stnum = str(number)
-        dot = stnum.find(".") - 1
-        print(dot)
+        if stnum.count(".") > 1:
+            raise RuntimeError("String with more than two periods are not implemented")
+        dot = stnum.find(".")
         stnum = stnum.replace(".", "")
 
+        for i in range(len(stnum)):
+            self.print_digit(i, stnum[len(stnum) - 1 - i])
         self._period_container[dot].color_index = 2
-        self.print(stnum)
 
 
 class SEG14x4:
