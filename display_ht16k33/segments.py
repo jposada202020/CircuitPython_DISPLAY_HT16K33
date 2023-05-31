@@ -169,7 +169,7 @@ NUMBERS = (
     0x00,  # Null
 )
 
-# pylint: disable=too-many-arguments, too-many-instance-attributes, too-few-public-methods
+# pylint: disable=too-many-arguments, too-many-instance-attributes, too-few-public-methods, too-many-lines
 
 
 class SEG7x4:
@@ -424,6 +424,9 @@ class SEG7x4:
                 self._digits[pos][i].color_index = 1
 
     def set_digit_raw(self, pos, value):
+        """
+        Set digit raw
+        """
 
         new_value = value & 0x7F
 
@@ -466,6 +469,9 @@ class SEG7x4:
 
     @property
     def colon(self):
+        """
+        Colon property
+        """
         return self._colon
 
     @colon.setter
@@ -495,6 +501,7 @@ class SEG7x4:
                 cycle(text, delay)
         else:
             cycle(text, delay)
+
 
 class SEG14x4:
     """
