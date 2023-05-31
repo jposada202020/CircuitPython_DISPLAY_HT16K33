@@ -212,7 +212,9 @@ class SEG7x4:
 
         self._digits = [None, None, None, None]
         self._two_points_container = []
+        self._period_container = []
         self._colon = False
+        self._points = False
 
         self._chardict = char_dict
 
@@ -372,6 +374,7 @@ class SEG7x4:
             color_index=1,
         )
         self.group.append(value)
+        self._period_container.append(value)
 
     def print(self, value: Union[int, str]) -> None:
         """
@@ -380,6 +383,9 @@ class SEG7x4:
         :param int|str value: String to be put in the 7x4 segment
         """
         self.clear()
+        if isinstance(value, float):
+            self._number(value)
+            return
         if isinstance(value, int):
             value = str(value)
         if ":" in value:
@@ -478,6 +484,22 @@ class SEG7x4:
     def colon(self, value: bool):
         self._two_points(value)
 
+    @property
+    def points(self):
+        """
+        points property
+        """
+        return self._points
+
+    @points.setter
+    def points(self, show: bool):
+        if show:
+            for i in range(4):
+                self._period_container[i].color_index = 2
+        else:
+            for i in range(4):
+                self._period_container[i].color_index = 1
+
     def marquee(self, text: str, delay: float = 0.25, loop: bool = True) -> None:
         """
         Automatically scroll the text at the specified delay between characters
@@ -501,6 +523,15 @@ class SEG7x4:
                 cycle(text, delay)
         else:
             cycle(text, delay)
+
+    def _number(self, number: float) -> None:
+        stnum = str(number)
+        dot = stnum.find(".") - 1
+        print(dot)
+        stnum = stnum.replace(".", "")
+
+        self._period_container[dot].color_index = 2
+        self.print(stnum)
 
 
 class SEG14x4:
@@ -918,6 +949,7 @@ class SEG14x4:
         :param str value: String to be put in the 7x4 segment
         """
         self.clear()
+
         if ":" in value:
             value = value.replace(":", "")
             self._two_points(True)
