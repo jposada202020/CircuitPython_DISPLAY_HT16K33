@@ -60,6 +60,7 @@ Marquee 14x4 example
 
 .. literalinclude:: ../examples/display_ht16k33_segments_marquee.py
     :caption: examples/display_ht16k33_segments_marquee.py
+    :lines: 5-
 
 Advanced Example
 ------------------------------
@@ -68,3 +69,13 @@ Advanced Example
 
 .. literalinclude:: ../examples/display_ht16k33_advanced_example.py
     :caption: examples/display_ht16k33_advanced_example.py
+    :lines: 7-
+
+FrameBuffer Example
+------------------------------
+
+FrameBuffer Example
+
+.. literalinclude:: ../examples/display_ht16k33_frame_buffer_example.py
+    :caption: examples/display_ht16k33_frame_buffer_example.py
+    :lines: 5-
