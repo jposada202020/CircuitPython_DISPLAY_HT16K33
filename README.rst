@@ -30,7 +30,7 @@ Also work with segments 7x4 and 14x4 with a very similar syntax to the Adafruit 
 
 
 This librarry support the Pixelit format for the 8x8 matrix. for more information visit the Pixelit repository or the
-pixelit `galleries at <https://pixelit-project.github.io/PixelIt/webui/#/gallery>`_
+pixelit `galleries <https://pixelit-project.github.io/PixelIt/webui/#/gallery>`_
 
 Please refer to the documentation for more information. `Here <https://circuitpython-display-ht16k33.readthedocs.io/>`_
 
