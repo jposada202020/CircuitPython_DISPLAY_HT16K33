@@ -16,7 +16,7 @@ else:
     matrix = matrix.Matrix8x8(50, 60, 8, True)
 
 display = board.DISPLAY
-display.show(matrix.group)
+display.root_group = matrix.group
 
 buf = bytearray(col)
 fb = adafruit_framebuf.FrameBuffer(buf, col, 16, adafruit_framebuf.MVLSB)

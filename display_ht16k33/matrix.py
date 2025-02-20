@@ -30,19 +30,23 @@ __repo__ = "https://github.com/jposada202020/CircuitPython_DISPLAY_HT16K33.git"
 class Matrix8x8(HT16K33):
     """A single matrix.
     :param int x: x coordinates in pixels for the matrix to start. This is the top
-    left corner of the first digit
+    left corner of the first digit. Default is 0
     :param int y: y coordinates in pixels for the matrix to start. This is the top
-    left corner of the first digit
+    left corner of the first digit. Default is 0
 
-    :param int radius: led radius in pixels.
+    :param int radius: led radius in pixels. Default is 5
 
     :param bool text: define if the matrix will be used to display text. For reasons
      that are beyond my understanding :). The text and pixels examples work differently.
      displaying text will use framebuffer, and it will show in a different direction. will be
-     good to review a PR if you found this situation a little too much for your OCD ;)
+     good to review a PR if you found this situation a little too much for your OCD ;).
+     Default is False
     """
 
-    def __init__(self, x, y, radius, text):
+    def __init__(self, x: int = 0, y: int = 0, radius: int = 5, text: bool = False):
+        self._x = x
+        self._y = y
+
         super().__init__(
             x=x,
             y=y,
@@ -57,26 +61,30 @@ class Matrix8x8(HT16K33):
         x, y = key
         return self.pixel(x, y)
 
-    def __setitem__(self, key: Tuple[int, int], value: Optional[bool]) -> None:
+    def __setitem__(
+        self, key: Tuple[int, int], color: Optional[bool], shown: bool = True
+    ) -> None:
         x, y = key
-        self.pixel(x, y, value)
+        self._pixel_buffer = color
+        self.pixel(x, y, shown)
 
 
 class Matrix16x8(HT16K33):
     """A single matrix.
     :param int x: x coordinates in pixels for the matrix to start. This is the top
-    left corner of the first digit
+    left corner of the first digit. Default is 0
     :param int y: y coordinates in pixels for the matrix to start. This is the top
-    left corner of the first digit
-    :param int radius: led radius in pixels.
+    left corner of the first digit. Default is 0
+    :param int radius: led radius in pixels. Default is 5
 
     :param bool text: define if the matrix will be used to display text. For reasons
      that are beyond my understanding :). The text and pixels examples work differently.
      displaying text will use framebuffer, and it will show in a different direction. will be
-     good to review a PR if you found this situation a little too much for your OCD ;)
+     good to review a PR if you found this situation a little too much for your OCD ;).
+     Default is False
     """
 
-    def __init__(self, x, y, radius, text):
+    def __init__(self, x: int = 0, y: int = 0, radius: int = 5, text: bool = False):
 
         super().__init__(
             x=x,
@@ -92,6 +100,9 @@ class Matrix16x8(HT16K33):
         x, y = key
         return self.pixel(x, y)
 
-    def __setitem__(self, key: Tuple[int, int], value: Optional[bool]) -> None:
+    def __setitem__(
+        self, key: Tuple[int, int], color: Optional[bool], shown: bool = True
+    ) -> None:
         x, y = key
-        self.pixel(x, y, value)
+        self._pixel_buffer = color
+        self.pixel(x, y, shown)

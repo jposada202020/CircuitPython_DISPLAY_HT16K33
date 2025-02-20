@@ -20,7 +20,7 @@ my_segment = SEG7x4(150, 40, height=20, length=20, space=35, color_on=0x00FF10)
 general_group.append(my_matrix.group)
 general_group.append(my_segment2.group)
 general_group.append(my_segment.group)
-display.show(general_group)
+display.root_group = general_group
 
 for row in range(2, 6):
     my_matrix[row, 0] = 1

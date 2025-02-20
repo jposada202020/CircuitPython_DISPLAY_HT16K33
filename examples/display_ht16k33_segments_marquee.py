@@ -12,5 +12,5 @@ group = displayio.Group()
 my_segment = SEG14x4(40, 40)
 
 group.append(my_segment.group)
-display.show(group)
+display.root_group = group
 my_segment.marquee("This is an example :)", delay=0.35, loop=True)

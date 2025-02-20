@@ -14,4 +14,4 @@ my_segment = SEG14x4(40, 40)
 group.append(my_segment.group)
 my_segment.print("12:30")
 
-display.show(group)
+display.root_group = group

@@ -10,7 +10,7 @@ display = board.DISPLAY
 
 my_segment = SEG7x4(40, 40)
 
-display.show(my_segment.group)
+display.root_group = my_segment.group
 
 for i in range(100, 0, -1):
     my_segment.print(i)

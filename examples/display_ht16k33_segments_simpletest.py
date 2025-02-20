@@ -13,7 +13,7 @@ display = board.DISPLAY
 
 my_segment = SEG7x4(40, 40)
 
-display.show(my_segment.group)
+display.root_group = my_segment.group
 
 # Clear the display.
 my_segment.fill(0)

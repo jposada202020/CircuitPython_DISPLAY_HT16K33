@@ -2,7 +2,7 @@
 #
 # SPDX-License-Identifier: MIT
 
-# Copied and adapted in ht16k33_matrix_simpletest.py example for the Adafruit_ht16k33 library here:
+# Copied and adapted in ht16k33_matrix_simpletest.py example for the Adafruit_ht16k33
 
 import time
 import board
@@ -10,7 +10,8 @@ from display_ht16k33 import matrix
 
 display = board.DISPLAY
 matrix = matrix.Matrix8x8()
-display.show(matrix.group)
+
+display.root_group = matrix.group
 
 for row in range(2, 6):
     matrix[row, 0] = 1

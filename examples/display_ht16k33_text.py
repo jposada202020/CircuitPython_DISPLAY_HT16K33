@@ -13,12 +13,12 @@ col = 16
 # col = 8
 
 if col == 16:
-    matrix = matrix.Matrix16x8()
+    matrix = matrix.Matrix16x8(text=True)
 else:
-    matrix = matrix.Matrix8x8()
+    matrix = matrix.Matrix8x8(text=True)
 
 display = board.DISPLAY
-display.show(matrix.group)
+display.root_group = matrix.group
 
 
 buf = bytearray(col)

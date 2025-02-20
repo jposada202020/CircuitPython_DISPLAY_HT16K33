@@ -24,5 +24,5 @@ custom_chars["g"] = 0b01101111
 
 my_segment = SEG7x4(40, 40, char_dict=custom_chars)
 
-display.show(my_segment.group)
+display.root_group = my_segment.group
 my_segment.print("sing")
