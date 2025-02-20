@@ -19,9 +19,6 @@ Introduction
     :target: https://github.com/jposada202020/CircuitPython_DISPLAY_HT16K33/actions
     :alt: Build Status
 
-.. image:: https://img.shields.io/badge/code%20style-black-000000.svg
-    :target: https://github.com/psf/black
-    :alt: Code Style: Black
 
 On Display Simulation for an HT16K33 driver. Works with 16x8 and 8x8 matrices.
 
@@ -31,6 +28,11 @@ Also work with segments 7x4 and 14x4 with a very similar syntax to the Adafruit 
 
 .. image:: https://github.com/jposada202020/CircuitPython_DISPLAY_HT16K33/blob/master/docs/segments.jpg
 
+
+This librarry support the Pixelit format for the 8x8 matrix. for more information visit the Pixelit repository or the
+pixelit galleries at <https://pixelit-project.github.io/PixelIt/webui/#/gallery>
+
+Please refer to the documentation for more information. Here <https://circuitpython-display-ht16k33.readthedocs.io/>
 
 Dependencies
 =============
